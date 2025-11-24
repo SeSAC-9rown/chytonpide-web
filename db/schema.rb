@@ -10,28 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_19_030132) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_24_050947) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "devices", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "name"
+    t.string "model"
     t.string "serial"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.string "wifi_password"
-    t.string "wifi_ssid"
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
   create_table "kits", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "device_id", null: false
+    t.integer "fertilizer_interval_days"
     t.string "kind"
     t.string "name"
-    t.datetime "planted_at"
+    t.date "planted_at"
     t.datetime "updated_at", null: false
+    t.integer "watering_interval_days"
     t.index ["device_id"], name: "index_kits_on_device_id"
   end
 
@@ -39,7 +39,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_030132) do
     t.text "content"
     t.datetime "created_at", null: false
     t.date "logged_on"
-    t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_logs_on_user_id"
@@ -51,6 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_030132) do
     t.string "email"
     t.string "name"
     t.string "provider"
+    t.string "social_avatar_url"
     t.string "uid"
     t.datetime "updated_at", null: false
   end

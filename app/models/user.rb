@@ -1,6 +1,5 @@
 class User < ApplicationRecord
 	has_one :device, dependent: :destroy
-
-	validates :name, :provider, :uid, presence: true
-	validates :email, presence: true, uniqueness: true
+	validates :email, uniqueness: true
+	validates :email, :provider, :uid, :name, :avatar_url, presence: true
 end
