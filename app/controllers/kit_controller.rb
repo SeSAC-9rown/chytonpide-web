@@ -1,0 +1,2 @@
+class KitController < ApplicationController
+end
