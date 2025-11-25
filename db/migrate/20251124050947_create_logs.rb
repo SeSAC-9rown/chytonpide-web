@@ -4,6 +4,8 @@ class CreateLogs < ActiveRecord::Migration[8.1]
       t.references :user, null: false, foreign_key: true
       t.date :logged_on
       t.text :content
+      t.boolean :is_healthy
+      t.demical :pla
 
       t.timestamps
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_24_050947) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_25_185152) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_24_050947) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_logs_on_user_id"
+  end
+
+  create_table "sensor_data", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.float "humidity"
+    t.float "illuminance"
+    t.string "serial"
+    t.float "temperature"
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

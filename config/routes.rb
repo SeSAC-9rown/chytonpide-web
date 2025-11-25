@@ -18,4 +18,7 @@ Rails.application.routes.draw do
 		end
 		resources :logs, except: [:index, :show], as: :logs
 	end
+
+	# Sensor data
+	post '/sensor_data', to: 'sensor_data#create'
 end
