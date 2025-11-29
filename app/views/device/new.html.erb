@@ -1,0 +1,139 @@
+<main class="flex-1 p-6 pb-24 md:pb-6 md:ml-64">
+  <div class="max-w-md mx-auto mt-12">
+    <div class="bg-white p-8 rounded-lg shadow-md">
+      <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">디바이스 등록</h2>
+      <p class="text-sm text-gray-600 text-center mb-6">화분 QR 코드를 스캔하세요</p>
+      
+      <!-- QR 코드 스캔 영역 표시 -->
+      <div class="mb-6 p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center h-48">
+        <div class="text-center">
+          <svg class="w-16 h-16 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <p class="text-gray-600 text-sm">카메라 스캔 준비 중...</p>
+        </div>
+      </div>
+      
+      <!-- 카메라 열기 버튼 -->
+      <button 
+        id="scan-qr-btn"
+        class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition mb-3">
+        📷 QR 코드 스캔
+      </button>
+      
+      <!-- 수동 입력 영역 (선택사항) -->
+      <div class="border-t pt-4 mt-4">
+        <p class="text-sm text-gray-600 mb-3">또는 직접 입력</p>
+        <input 
+          type="text" 
+          id="serial-input" 
+          placeholder="시리얼 번호 입력 (예: CHY3343)"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-600 mb-3">
+        <button 
+          id="manual-submit-btn"
+          class="w-full py-2 px-4 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
+          등록
+        </button>
+      </div>
+      
+      <!-- 로딩 상태 -->
+      <div id="loading" class="hidden mt-4 text-center">
+        <p class="text-gray-600">등록 중...</p>
+      </div>
+      
+      <!-- 결과 메시지 -->
+      <div id="message" class="mt-4 p-3 rounded-lg hidden text-sm text-center font-semibold"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // QR 코드 스캔 버튼 클릭
+  document.getElementById('scan-qr-btn').addEventListener('click', async () => {
+    try {
+      // iOS 13+, Android 모던 브라우저용 QR 코드 스캔
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      });
+      
+      // 간단한 카메라 활성화 (실제 QR 코드 디코딩은 라이브러리 필요)
+      // 여기서는 사용자가 시리얼을 입력하면 바로 전송하도록 설정
+      alert('카메라가 열렸습니다. 시리얼 번호를 입력하거나 QR을 스캔하세요.');
+      
+      // 스트림 종료
+      stream.getTracks().forEach(track => track.stop());
+    } catch (error) {
+      console.error('카메라 접근 실패:', error);
+      alert('카메라에 접근할 수 없습니다. 직접 입력해주세요.');
+    }
+  });
+
+  // 수동 등록 버튼
+  document.getElementById('manual-submit-btn').addEventListener('click', registerDevice);
+  
+  // Enter 키로도 등록 가능
+  document.getElementById('serial-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') registerDevice();
+  });
+
+  // 디바이스 등록 함수
+  async function registerDevice() {
+    const serial = document.getElementById('serial-input').value.trim();
+    
+    if (!serial) {
+      showMessage('시리얼 번호를 입력하세요', 'error');
+      return;
+    }
+    
+    const loading = document.getElementById('loading');
+    const messageDiv = document.getElementById('message');
+    
+    loading.classList.remove('hidden');
+    messageDiv.classList.add('hidden');
+    
+    try {
+      const response = await fetch(`<%= user_device_path(current_user) %>`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          device: { serial: serial }
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        showMessage('✅ ' + data.message, 'success');
+        document.getElementById('serial-input').value = '';
+        
+        // 2초 후 메인 페이지로 리다이렉트
+        setTimeout(() => {
+          window.location.href = '<%= root_path %>';
+        }, 2000);
+      } else {
+        showMessage('❌ ' + data.message, 'error');
+      }
+    } catch (error) {
+      console.error('등록 오류:', error);
+      showMessage('❌ 등록 중 오류가 발생했습니다', 'error');
+    } finally {
+      loading.classList.add('hidden');
+    }
+  }
+
+  // 메시지 표시 함수
+  function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = text;
+    messageDiv.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+    
+    if (type === 'success') {
+      messageDiv.classList.add('bg-green-100', 'text-green-800');
+    } else {
+      messageDiv.classList.add('bg-red-100', 'text-red-800');
+    }
+  }
+</script>

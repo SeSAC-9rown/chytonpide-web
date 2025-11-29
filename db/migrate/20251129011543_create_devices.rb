@@ -4,6 +4,8 @@ class CreateDevices < ActiveRecord::Migration[8.1]
       t.references :user, null: false, foreign_key: true
       t.string :serial
       t.string :model
+      t.boolean :is_led_on
+      t.string :lcd_face
 
       t.timestamps
     end

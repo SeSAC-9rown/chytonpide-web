@@ -117,9 +117,42 @@
                   form: { class: "w-full" },
                   class: "w-full text-left text-red-600 font-semibold p-4 hover:bg-gray-50" %>
 </div>
-
-
+<!-- 회원 탈퇴 버튼 -->
+<div class="bg-white rounded-lg shadow-md mt-4">
+  <button 
+    id="delete-account-btn"
+    class="w-full text-left text-red-700 font-semibold p-4 hover:bg-red-50 border-t border-red-200">
+    회원 탈퇴
+  </button>
+</div>
         </main>
 
     </div>
     </body>
+    <script>
+  document.getElementById('delete-account-btn').addEventListener('click', () => {
+    const confirmed = confirm('정말 탈퇴하시겠습니까?\n모든 데이터가 삭제되며 복구되지 않습니다.');
+    
+    if (confirmed) {
+      fetch('<%= user_path(current_user) %>', {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('회원 탈퇴가 완료되었습니다.');
+          window.location.href = '<%= root_path %>';
+        } else {
+          alert('탈퇴 중 오류가 발생했습니다.');
+        }
+      })
+      .catch(error => {
+        console.error('오류:', error);
+        alert('탈퇴 중 오류가 발생했습니다.');
+      });
+    }
+  });
+</script>

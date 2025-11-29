@@ -13,10 +13,17 @@ Rails.application.routes.draw do
 	
 	# Endpoints
 	resources :users, except: [:index, :show], as: :users do
-		resource :device, except: :show, as: :device do
+		resource :device, except: :show, as: :device, controller: :device do
 			resource :kit, except: :show, as: :kit
 		end
 		resources :logs, except: [:index, :show], as: :logs
+	end
+
+	resources :devices, only: [], param: :serial do
+		member do
+			get :led
+			get :lcd
+		end
 	end
 
 	# Sensor data

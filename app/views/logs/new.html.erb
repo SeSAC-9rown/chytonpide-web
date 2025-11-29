@@ -1,0 +1,203 @@
+<main class="flex-1 p-6 pb-24 md:pb-6 md:ml-64">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6">성장 기록 추가</h2>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <!-- 사진 미리보기 -->
+      <div id="image-preview" class="mb-6 hidden">
+        <p class="text-sm text-gray-600 mb-2">촬영한 사진</p>
+        <img id="preview-img" src="" alt="미리보기" class="w-32 h-32 object-cover rounded-lg border-2 border-blue-300">
+        <button 
+          type="button"
+          id="retake-btn"
+          class="mt-2 text-sm text-blue-600 hover:text-blue-800 underline">
+          다시 촬영
+        </button>
+      </div>
+
+      <!-- 카메라 입력 (숨김) -->
+      <input 
+        type="file" 
+        id="camera-input" 
+        accept="image/*" 
+        capture="environment"
+        class="hidden">
+
+      <!-- 카메라 버튼 -->
+      <button 
+        id="camera-btn"
+        type="button"
+        class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition mb-6">
+        📷 사진 촬영
+      </button>
+
+      <!-- 분석 상태 표시 -->
+      <div id="analyzing" class="hidden mb-6 p-4 bg-blue-50 rounded-lg">
+        <p class="text-blue-700 text-sm">🔄 식물 이미지 분석 중...</p>
+      </div>
+
+      <!-- 분석 결과 표시 -->
+      <div id="analysis-result" class="hidden mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+        <p class="text-green-700 font-semibold mb-2">✅ 분석 완료</p>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <p class="text-gray-600">진단</p>
+            <p id="result-diagnosis" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div>
+            <p class="text-gray-600">신뢰도</p>
+            <p id="result-confidence" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div>
+            <p class="text-gray-600">엽면적 (cm²)</p>
+            <p id="result-pla" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div>
+            <p class="text-gray-600">잎 개수</p>
+            <p id="result-leaf-count" class="font-semibold text-gray-900">-</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 에러 메시지 -->
+      <div id="error-message" class="hidden mb-6 p-4 bg-red-50 rounded-lg border border-red-200">
+        <p class="text-red-700 text-sm" id="error-text"></p>
+      </div>
+
+      <!-- 내용 입력 폼 -->
+      <%= form_with(model: [@log = current_user.logs.build], local: true, id: "log-form") do |form| %>
+        <div class="mb-4">
+          <%= form.label :content, "성장 기록" %>
+          <%= form.text_area :content, 
+                            placeholder: "식물의 상태와 변화를 기록해보세요...",
+                            rows: 5,
+                            class: "w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-600" %>
+        </div>
+
+        <!-- 숨겨진 필드들 -->
+        <%= form.hidden_field :image, id: "hidden-image" %>
+        <%= form.hidden_field :logged_on, value: params[:date] || Date.today, id: "logged-on" %>
+        <%= form.hidden_field :is_healthy, id: "is-healthy" %>
+        <%= form.hidden_field :pla, id: "pla" %>
+
+        <!-- 버튼 -->
+        <div class="flex gap-3">
+          <%= link_to "취소", 
+                      log_path(date: params[:date] || Date.today), 
+                      class: "flex-1 py-3 px-4 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition text-center" %>
+          <%= form.submit "확인", 
+                         class: "flex-1 py-3 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed",
+                         id: "submit-btn",
+                         disabled: true %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>
+
+<script>
+  const cameraBtn = document.getElementById('camera-btn');
+  const cameraInput = document.getElementById('camera-input');
+  const imagePreview = document.getElementById('image-preview');
+  const previewImg = document.getElementById('preview-img');
+  const retakeBtn = document.getElementById('retake-btn');
+  const analyzingDiv = document.getElementById('analyzing');
+  const analysisResult = document.getElementById('analysis-result');
+  const errorMessage = document.getElementById('error-message');
+  const errorText = document.getElementById('error-text');
+  const submitBtn = document.getElementById('submit-btn');
+  
+  let selectedFile = null;
+  let analysisData = null;
+
+  cameraBtn.addEventListener('click', () => {
+    cameraInput.click();
+  });
+
+  cameraInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      previewImg.src = event.target.result;
+      imagePreview.classList.remove('hidden');
+      cameraBtn.classList.add('hidden');
+      errorMessage.classList.add('hidden');
+      analyzingDiv.classList.remove('hidden');
+      analysisResult.classList.add('hidden');
+      submitBtn.disabled = true;
+    };
+    reader.readAsDataURL(file);
+
+    await analyzeImage(file);
+  });
+
+  retakeBtn.addEventListener('click', () => {
+    cameraInput.value = '';
+    selectedFile = null;
+    imagePreview.classList.add('hidden');
+    cameraBtn.classList.remove('hidden');
+    analyzingDiv.classList.add('hidden');
+    analysisResult.classList.add('hidden');
+    errorMessage.classList.add('hidden');
+    submitBtn.disabled = true;
+  });
+
+  async function analyzeImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('https://chytonpide-ai.azurewebsites.net/analyze', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('분석 실패');
+      }
+
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        analysisData = data.data;
+        
+        document.getElementById('result-diagnosis').textContent = 
+          analysisData.diagnosis === 'healthy' ? '건강함' : '질병 있음';
+        document.getElementById('result-confidence').textContent = analysisData.confidence;
+        document.getElementById('result-pla').textContent = analysisData.pla_cm2.toFixed(2);
+        document.getElementById('result-leaf-count').textContent = analysisData.leaf_count;
+
+        document.getElementById('is-healthy').value = analysisData.diagnosis === 'healthy' ? 'true' : 'false';
+        document.getElementById('pla').value = analysisData.pla_cm2;
+
+        analyzingDiv.classList.add('hidden');
+        analysisResult.classList.remove('hidden');
+        submitBtn.disabled = false;
+        errorMessage.classList.add('hidden');
+      } else {
+        showError('분석 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('분석 요청 오류:', error);
+      showError('서버와의 통신 중 오류가 발생했습니다.');
+      analyzingDiv.classList.add('hidden');
+    }
+  }
+
+  function showError(message) {
+    errorText.textContent = message;
+    errorMessage.classList.remove('hidden');
+    submitBtn.disabled = true;
+  }
+
+  document.getElementById('log-form').addEventListener('submit', (e) => {
+    if (!selectedFile) {
+      e.preventDefault();
+      alert('사진을 선택해주세요.');
+    }
+  });
+</script>

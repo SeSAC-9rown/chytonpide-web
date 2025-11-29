@@ -29,6 +29,13 @@ class UsersController < ApplicationController
 			render :new
 		end
 	end
+
+	def destroy
+		current_user.destroy
+		reset_session
+		
+		render json: { success: true }
+	end
 	
 	private
 	
