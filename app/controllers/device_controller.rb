@@ -35,28 +35,19 @@ class DeviceController < ApplicationController
 
     def update
         @device = current_user.device
-        
-        # 디바이스가 없으면
-        unless @device
-            return render json: { 
-                status: 'error', 
-                message: '등록된 디바이스가 없습니다.'
-            }, status: :not_found
-        end
-        
+      
+        Rails.logger.info "DEVICE UPDATE params: #{params.inspect}"
+        Rails.logger.info "BEFORE: #{@device.attributes.slice('led_mode','is_led_on','lcd_face')}"
+      
         if @device.update(device_update_params)
-            render json: { 
-                status: 'success', 
-                message: '디바이스가 업데이트되었습니다.'
-            }
+          Rails.logger.info "AFTER:  #{@device.attributes.slice('led_mode','is_led_on','lcd_face')}"
+          render json: { status: 'success', message: '디바이스가 업데이트되었습니다.' }
         else
-            render json: { 
-                status: 'error', 
-                message: '업데이트 실패',
-                errors: @device.errors.full_messages 
-            }, status: :unprocessable_entity
+          Rails.logger.error "UPDATE ERRORS: #{@device.errors.full_messages}"
+          render json: { status: 'error', message: '업데이트 실패', errors: @device.errors.full_messages },
+                 status: :unprocessable_entity
         end
-    end
+    end      
     
     private
 
@@ -64,8 +55,12 @@ class DeviceController < ApplicationController
         params.require(:device).permit(:serial)
     end
 
-    # 업데이트할 때만 받을 파라미터
     def device_update_params
-        params.permit(:led_mode, :is_led_on, :lcd_face)
-    end
+        # is_led_on 컬럼이 boolean 타입이라고 가정
+        {
+          led_mode:  params[:led_mode],
+          lcd_face:  params[:lcd_face],
+          is_led_on: ActiveModel::Type::Boolean.new.cast(params[:is_led_on]) # "true"/"false" → true/false
+        }
+      end
 end
