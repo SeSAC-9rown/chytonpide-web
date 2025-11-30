@@ -23,15 +23,3 @@ production:
     username: <%= ENV["APPSETTING_DB_USER"] %>
     password: <%= ENV["APPSETTING_DB_PASSWORD"] %>
     host: <%= ENV["APPSETTING_DB_HOST"] %>
-  cache:
-    <<: *primary_production
-    database: chytonpide_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: chytonpide_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: chytonpide_production_cable
-    migrations_paths: db/cable_migrate
