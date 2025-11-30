@@ -99,8 +99,27 @@
 
                 <script>
                     const serial = '<%= current_user.device.serial %>';
+                    const initialLedMode = '<%= current_user.device.led_mode %>';
+                    let currentLedMode = initialLedMode;
 
-                    async function updateDevice(lcdFace, isLedOn, buttonType) {
+                    // 페이지 로드 시 초기 상태 설정
+                    document.addEventListener('DOMContentLoaded', function() {
+                        updateButtonDisplay(currentLedMode);
+                    });
+
+                    // 탭 돌아올 때도 상태 복원
+                    document.addEventListener('visibilitychange', function() {
+                        if (!document.hidden) {
+                            updateButtonDisplay(currentLedMode);
+                        }
+                    });
+
+                    async function updateDevice(ledMode, isLedOn, lcdFace) {
+                        // 즉시 UI 업데이트 (서버 응답 대기 X)
+                        currentLedMode = ledMode;
+                        updateButtonDisplay(currentLedMode);
+
+                        // 백그라운드에서 서버 요청
                         try {
                             const response = await fetch('/devices/' + serial, {
                                 method: 'PATCH',
@@ -108,15 +127,12 @@
                                     'Content-Type': 'application/x-www-form-urlencoded',
                                     'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
                                 },
-                                body: 'lcd_face=' + lcdFace + '&is_led_on=' + isLedOn
+                                body: 'led_mode=' + ledMode + '&is_led_on=' + isLedOn + '&lcd_face=' + lcdFace
                             });
 
                             const data = await response.json();
 
-                            if (data.status === 'success') {
-                                console.log('업데이트 성공:', data);
-                                updateButtonStyles(buttonType);
-                            } else {
+                            if (data.status !== 'success') {
                                 console.error('업데이트 실패:', data);
                                 alert('상태 업데이트에 실패했습니다.');
                             }
@@ -126,38 +142,39 @@
                         }
                     }
 
-                    function updateButtonStyles(activeButton) {
+                    function updateButtonDisplay(ledMode) {
                         const onBtn = document.getElementById('led-on-btn');
                         const offBtn = document.getElementById('led-off-btn');
                         const autoBtn = document.getElementById('led-auto-btn');
 
                         if (!onBtn || !offBtn || !autoBtn) return;
 
+                        // 모든 버튼 기본 스타일
                         onBtn.className = 'py-3 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition';
                         offBtn.className = 'py-3 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition';
                         autoBtn.className = 'py-3 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition';
 
-                        if (activeButton === 'on') {
+                        // led_mode에 따라 버튼 활성화
+                        if (ledMode === 'ON') {
                             onBtn.className = 'py-3 px-4 rounded-lg bg-green-600 text-white font-semibold shadow transition';
-                        } else if (activeButton === 'off') {
+                        } else if (ledMode === 'OFF') {
                             offBtn.className = 'py-3 px-4 rounded-lg bg-gray-600 text-white font-semibold shadow transition';
-                        } else if (activeButton === 'auto') {
+                        } else if (ledMode === 'AUTO') {
                             autoBtn.className = 'py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold shadow transition';
                         }
                     }
 
-                    // 이벤트 위임 사용 - document에 한 번만 바인딩
+                    // 이벤트 위임으로 안정성 확보
                     document.addEventListener('click', function(e) {
                         if (e.target.id === 'led-on-btn') {
-                            updateDevice('HAPPY', 'true', 'on');
+                            updateDevice('ON', 'true', 'HAPPY');
                         } else if (e.target.id === 'led-off-btn') {
-                            updateDevice('SAD', 'false', 'off');
+                            updateDevice('OFF', 'false', 'SAD');
                         } else if (e.target.id === 'led-auto-btn') {
-                            updateDevice('HAPPY', 'true', 'auto');
+                            updateDevice('AUTO', 'true', 'HAPPY');
                         }
                     });
                 </script>
-
             <% else %>
                 <div class="flex flex-col items-center justify-center h-96">
                     <div class="text-center">

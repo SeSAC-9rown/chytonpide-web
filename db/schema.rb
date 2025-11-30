@@ -46,6 +46,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_29_064138) do
     t.datetime "created_at", null: false
     t.boolean "is_led_on"
     t.string "lcd_face"
+    t.string "led_mode"
     t.string "model"
     t.string "serial"
     t.datetime "updated_at", null: false

@@ -32,10 +32,40 @@ class DeviceController < ApplicationController
             }, status: :unprocessable_entity
         end
     end
+
+    def update
+        @device = current_user.device
+        
+        # 디바이스가 없으면
+        unless @device
+            return render json: { 
+                status: 'error', 
+                message: '등록된 디바이스가 없습니다.'
+            }, status: :not_found
+        end
+        
+        if @device.update(device_update_params)
+            render json: { 
+                status: 'success', 
+                message: '디바이스가 업데이트되었습니다.'
+            }
+        else
+            render json: { 
+                status: 'error', 
+                message: '업데이트 실패',
+                errors: @device.errors.full_messages 
+            }, status: :unprocessable_entity
+        end
+    end
     
     private
-    
+
     def device_params
         params.require(:device).permit(:serial)
+    end
+
+    # 업데이트할 때만 받을 파라미터
+    def device_update_params
+        params.permit(:led_mode, :is_led_on, :lcd_face)
     end
 end
