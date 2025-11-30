@@ -1,7 +1,10 @@
 class PagesController < ApplicationController
 	before_action :require_login
 	
-	def home; end
+	def home
+		@device = current_user.device
+	end
+	  
 	
 	def log
 		# 파라미터로 날짜가 넘어오면 그 날짜, 아니면 오늘 날짜

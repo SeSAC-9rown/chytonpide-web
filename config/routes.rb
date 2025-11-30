@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 		resources :logs, except: [:index, :show], as: :logs
 	end
 
-	resources :devices, only: [], param: :serial do
+	resources :devices, only: [ :update ], param: :serial do
 		member do
 			get :led
 			get :lcd

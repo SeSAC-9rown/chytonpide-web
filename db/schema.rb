@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_29_025133) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_29_064138) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,7 +44,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_29_025133) do
 
   create_table "devices", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.datetime "deleted_at"
     t.boolean "is_led_on"
     t.string "lcd_face"
     t.string "model"
@@ -69,7 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_29_025133) do
   create_table "logs", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
-    t.datetime "deleted_at"
+    t.string "growth_stage"
     t.boolean "is_healthy"
     t.date "logged_on"
     t.decimal "pla"

@@ -16,6 +16,6 @@ class LogsController < ApplicationController
     private
 
     def log_params
-        params.require(:log).permit(:logged_on, :content, :is_healthy, :pla, :image)
+        params.require(:log).permit(:logged_on, :content, :growth_stage, :is_healthy, :pla, :image)
     end
 end
