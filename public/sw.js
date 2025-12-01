@@ -1,7 +1,6 @@
 const CACHE_NAME = 'plant-ai-v1';
 const urlsToCache = [
-  '/',
-  '/offline.html'
+  '/'
 ];
 
 // 설치 시 캐시 저장

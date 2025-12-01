@@ -1,0 +1,352 @@
+/* Home Page Styles */
+
+/* ===== 기본 레이아웃 ===== */
+.home-page {
+  position: relative;
+  height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 배경 이미지 */
+.home-background {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* ===== MAIN CONTENT ===== */
+.home-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  padding-bottom: 65px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  max-height: calc(100vh - 70px);
+}
+
+/* ===== 온도/습도 카드 ===== */
+.info-cards {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(8px, 2vw, 10px);
+  flex-shrink: 0;
+  transform: translateY(30%);
+}
+
+.info-card {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: clamp(16px, 4.5vw, 20px);
+  padding: clamp(12px, 3vw, 16px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.5vw, 4px);
+}
+
+.card-label {
+  font-family: var(--font-primary);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: var(--font-weight-medium);
+  color: #495565;
+}
+
+.card-value {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(2px, 0.5vw, 4px);
+}
+
+.value-number {
+  font-family: var(--font-primary);
+  font-size: clamp(36px, 10vw, 48px);
+  font-weight: var(--font-weight-bold);
+  color: #101727;
+  line-height: 1;
+}
+
+.value-unit {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 4.5vw, 20px);
+  font-weight: var(--font-weight-medium);
+  color: #495565;
+}
+
+.card-status {
+  font-family: var(--font-primary);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: var(--font-weight-medium);
+}
+
+.status-good {
+  color: #00c850;
+}
+
+.status-warning {
+  color: #fa2b36;
+}
+
+/* ===== 물주기/영양제 카드 ===== */
+.care-cards {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(8px, 2vw, 10px);
+  flex-shrink: 0;
+  transform: translateY(40%);
+}
+
+.care-card {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: clamp(16px, 4.5vw, 20px);
+  padding: clamp(14px, 3.5vw, 18px) clamp(16px, 4vw, 20px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.care-icon {
+  font-size: clamp(28px, 7.5vw, 36px);
+  line-height: 1;
+}
+
+.care-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.5vw, 4px);
+}
+
+.care-label {
+  font-family: var(--font-primary);
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: var(--font-weight-medium);
+  color: #495565;
+}
+
+.care-value {
+  font-family: var(--font-primary);
+  font-size: clamp(18px, 5vw, 24px);
+  font-weight: var(--font-weight-bold);
+  color: #155dfc;
+}
+
+/* ===== 치피 캐릭터 ===== */
+.chipi-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding-bottom: 0;
+  min-height: 0;
+  transform: translateY(0%);
+}
+
+.chipi-character {
+  width: clamp(230px, 63vw, 322px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+}
+
+/* ===== 조명 컨트롤 카드 ===== */
+.light-control-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: clamp(16px, 4.5vw, 20px);
+  padding: clamp(12px, 3vw, 16px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0;
+  flex-shrink: 0;
+  transform: translateY(-20%);
+}
+
+.light-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 10px);
+  margin-bottom: clamp(10px, 2.5vw, 12px);
+  padding: 0 clamp(4px, 1vw, 6px);
+}
+
+.light-icon {
+  font-size: clamp(18px, 4.8vw, 22px);
+  line-height: 1;
+}
+
+.light-title {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: var(--font-weight-semibold);
+  color: #354152;
+  flex: 1;
+}
+
+.light-status {
+  font-family: var(--font-primary);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: var(--font-weight-medium);
+  color: #697282;
+}
+
+.light-buttons {
+  display: flex;
+  gap: clamp(8px, 2vw, 10px);
+  justify-content: space-between;
+}
+
+.light-btn {
+  flex: 1;
+  height: clamp(36px, 9vw, 44px);
+  border-radius: clamp(14px, 3.8vw, 18px);
+  border: none;
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+  color: #364153;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.light-btn:active {
+  transform: scale(0.98);
+}
+
+.light-btn-on.active {
+  background: #155dfc;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(21, 93, 252, 0.3);
+}
+
+.light-btn-auto {
+  border: 1.5px solid #e5e7eb;
+  color: #155cfb;
+  background: #ffffff;
+}
+
+/* ===== BOTTOM NAVIGATION ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: clamp(60px, 15vw, 70px);
+  background: rgba(14, 12, 12, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: clamp(6px, 1.5vw, 8px) 0;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 0.8vw, 5px);
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: clamp(4px, 1vw, 6px) clamp(12px, 3vw, 16px);
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-item.active {
+  color: #ffffff;
+}
+
+.nav-icon {
+  width: clamp(22px, 6vw, 26px);
+  height: clamp(22px, 6vw, 26px);
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.6;
+}
+
+.nav-item.active .nav-icon {
+  opacity: 1;
+}
+
+.nav-label {
+  font-family: var(--font-primary);
+  font-size: clamp(10px, 2.8vw, 12px);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== DAY/NIGHT 테마 ===== */
+
+/* 낮 버전 */
+.home-day {
+  /* 낮 테마 전용 스타일 */
+}
+
+/* 밤 버전 */
+.home-night {
+  /* 밤 테마 전용 스타일 */
+}
+
+.home-night .home-background {
+  transform: translateX(-50%) translateY(-5%);
+}
+
+.home-night .status-time {
+  color: #ffffff;
+}
+
+.home-night .info-card,
+.home-night .care-card,
+.home-night .light-control-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+}
+
+.home-night .card-label,
+.home-night .care-label,
+.home-night .light-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.home-night .value-number {
+  color: #ffffff;
+}
+
+.home-night .value-unit {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.home-night .light-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.home-night .light-btn-on.active {
+  background: #155dfc;
+  color: #ffffff;
+}

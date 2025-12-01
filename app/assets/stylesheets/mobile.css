@@ -1,0 +1,109 @@
+/* Mobile Specific Optimizations */
+
+/* Mobile First - Base styles are for 375px */
+
+/* Safe Area for iOS Notch */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(44px, env(safe-area-inset-top));
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+
+  .safe-area-left {
+    padding-left: max(0px, env(safe-area-inset-left));
+  }
+
+  .safe-area-right {
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* Prevent Zoom on Input Focus (iOS) */
+@media screen and (max-width: 430px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Touch Optimizations */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* Hide Scrollbar but Keep Functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Small Mobile Devices (360px - Galaxy S) */
+@media (max-width: 374px) {
+  :root {
+    --logo-size-mobile: 180px;
+    --character-size: 260px;
+    --container-padding: 0.75rem;
+  }
+
+  .auth-title {
+    font-size: 1.75rem;
+  }
+}
+
+/* Large Mobile Devices (414px+ - iPhone Pro Max) */
+@media (min-width: 414px) {
+  :root {
+    --logo-size-mobile: 220px;
+    --character-size: 300px;
+  }
+}
+
+/* Tablet and Above (Optional) */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+
+  .splash-logo,
+  .auth-logo {
+    width: 240px;
+  }
+
+  .auth-title {
+    font-size: 2.5rem;
+  }
+}

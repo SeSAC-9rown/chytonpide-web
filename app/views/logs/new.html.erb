@@ -97,6 +97,8 @@
 </main>
 
 <script>
+  const analyzeApiBaseUrl = "<%= ENV.fetch('ANALYZE_API_BASE_URL', 'https://chytonpide.azurewebsites.net/analyze') %>";
+
   const cameraBtn = document.getElementById('camera-btn');
   const cameraInput = document.getElementById('camera-input');
   const imagePreview = document.getElementById('image-preview');
@@ -153,7 +155,7 @@
   
     try {
       console.log('분석 요청 시작...');
-      const response = await fetch('https://chytonpide-ai.azurewebsites.net/analyze', {
+      const response = await fetch(analyzeApiBaseUrl, {
         method: 'POST',
         body: formData
       });

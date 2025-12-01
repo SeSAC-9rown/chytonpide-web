@@ -1,0 +1,107 @@
+/* CSS Variables - Design System (Based on Figma Design) */
+
+:root {
+  /* Colors - Primary (Green Theme) */
+  --color-primary: #28B447;
+  --color-primary-light: #9FB39A;
+  --color-primary-dark: #173018;
+
+  /* Colors - Background */
+  --color-bg-primary: #D5E9C4;
+  --color-bg-secondary: #DDF3CF;
+  --color-bg-white: #FFFFFF;
+  --color-bg-card: #F4F6F2;
+  --color-bg-input: #E6E6E6;
+
+  /* Colors - Text */
+  --color-text-primary: #000000;
+  --color-text-secondary: #9CA3AF;
+  --color-text-dark: #111827;
+  --color-text-placeholder: #9CA3AF;
+  --color-text-white: #FFFFFF;
+
+  /* Colors - Neutral */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-gray-light: #F3F4F6;
+  --color-gray: #9CA3AF;
+  --color-gray-dark: #111827;
+
+  /* Typography - Font Family */
+  --font-primary: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Pretendard', 'Malgun Gothic', sans-serif;
+  --font-round: 'Gamja Flower', 'Nanum Pen Script', cursive; /* Rounded, cute font */
+  --font-maplestory: 'Maplestory Bold', 'Gamja Flower', cursive; /* Maplestory Bold font */
+  --font-logo: 'Courier New', monospace; /* For Chytonpide logo */
+
+  /* Typography - Font Size (Mobile First - 375px base) */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 2rem;        /* 32px */
+  --font-size-4xl: 2.5rem;      /* 40px */
+
+  /* Typography - Font Weight */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Typography - Line Height */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Spacing (Based on Figma design) */
+  --spacing-xs: 0.5rem;         /* 8px */
+  --spacing-sm: 1rem;           /* 16px */
+  --spacing-md: 1.5rem;         /* 24px */
+  --spacing-lg: 2rem;           /* 32px */
+  --spacing-xl: 2.5rem;         /* 40px */
+  --spacing-2xl: 3rem;          /* 48px */
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+
+  /* Z-index */
+  --z-index-base: 1;
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-modal: 500;
+
+  /* Layout - Mobile First (Base: 375px) */
+  --container-max-width: 430px;
+  --container-padding: 1rem;
+
+  /* Touch Targets (iOS/Android) */
+  --touch-target-min: 44px;
+
+  /* Component Specific */
+  --button-height: 56px;
+  --input-height: 56px;
+  --logo-size-mobile: 200px;
+  --character-size: 280px;
+}
+
+/* Breakpoints (for reference) */
+/* Mobile: 360px - 430px (default) */
+/* Tablet: 768px+ (optional) */
+/* Desktop: 1024px+ (optional) */
