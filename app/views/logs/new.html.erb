@@ -1,103 +1,155 @@
-<main class="flex-1 p-6 pb-24 md:pb-6 md:ml-64">
-  <div class="max-w-2xl mx-auto">
-    <h2 class="text-3xl font-bold text-gray-900 mb-6">성장 기록 추가</h2>
-    
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <!-- 사진 미리보기 -->
-      <div id="image-preview" class="mb-6 hidden">
-        <p class="text-sm text-gray-600 mb-2">촬영한 사진</p>
-        <img id="preview-img" src="" alt="미리보기" class="w-32 h-32 object-cover rounded-lg border-2 border-blue-300">
-        <button 
-          type="button"
-          id="retake-btn"
-          class="mt-2 text-sm text-blue-600 hover:text-blue-800 underline">
-          다시 촬영
-        </button>
-      </div>
-
-      <!-- 카메라 입력 (숨김) -->
-      <input 
-        type="file" 
-        id="camera-input" 
-        accept="image/*" 
-        capture="environment"
-        class="hidden">
-
-      <!-- 카메라 버튼 -->
-      <button 
-        id="camera-btn"
-        type="button"
-        class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition mb-6">
-        📷 사진 촬영
-      </button>
-
-      <!-- 분석 상태 표시 -->
-      <div id="analyzing" class="hidden mb-6 p-4 bg-blue-50 rounded-lg">
-        <p class="text-blue-700 text-sm">🔄 식물 이미지 분석 중...</p>
-      </div>
-
-      <!-- 분석 결과 표시 -->
-      <div id="analysis-result" class="hidden mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-        <p class="text-green-700 font-semibold mb-2">✅ 분석 완료</p>
-        <div class="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <p class="text-gray-600">진단</p>
-            <p id="result-diagnosis" class="font-semibold text-gray-900">-</p>
-          </div>
-          <div>
-            <p class="text-gray-600">신뢰도</p>
-            <p id="result-confidence" class="font-semibold text-gray-900">-</p>
-          </div>
-          <div>
-            <p class="text-gray-600">엽면적 (cm²)</p>
-            <p id="result-pla" class="font-semibold text-gray-900">-</p>
-          </div>
-          <div>
-            <p class="text-gray-600">잎 개수</p>
-            <p id="result-leaf-count" class="font-semibold text-gray-900">-</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 에러 메시지 -->
-      <div id="error-message" class="hidden mb-6 p-4 bg-red-50 rounded-lg border border-red-200">
-        <p class="text-red-700 text-sm" id="error-text"></p>
-      </div>
-
-      <!-- 내용 입력 폼 -->
-      <%= form_with(url: "/users/#{current_user.id}/logs", method: :post, model: @log, local: true, id: "log-form") do |form| %>
-  <div class="mb-4">
-    <%= form.label :content, "성장 기록" %>
-    <%= form.text_area :content, 
-                      placeholder: "식물의 상태와 변화를 기록해보세요...",
-                      rows: 5,
-                      class: "w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-600" %>
-  </div>
-
-  <!-- 숨겨진 필드들 -->
-  <%= form.file_field :image, id: "hidden-image", class: "hidden" %>
-  <%= form.hidden_field :logged_on, value: params[:date] || Date.today, id: "logged-on" %>
-  <%= form.hidden_field :is_healthy, id: "is-healthy" %>
-  <%= form.hidden_field :pla, id: "pla" %>
-  <%= form.hidden_field :growth_stage, id: "growth-stage" %>
-
-  <!-- 버튼 -->
-  <div class="flex gap-3">
-    <%= link_to "취소", 
-                log_path(date: params[:date] || Date.today), 
-                class: "flex-1 py-3 px-4 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition text-center" %>
-    <%= form.submit "확인", 
-                   class: "flex-1 py-3 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed",
-                   id: "submit-btn",
-                   disabled: true %>
-  </div>
+<% content_for :styles do %>
+	<%= stylesheet_link_tag "reset" %>
+	<%= stylesheet_link_tag "variables" %>
+	<%= stylesheet_link_tag "typography" %>
+	<%= stylesheet_link_tag "log" %>
+	<%= stylesheet_link_tag "mobile" %>
 <% end %>
+
+<div class="diary">
+  <!-- Background Image -->
+  <%= image_tag "home/day-background.png", alt: "낮 배경", class: "log-background" %>
+
+  <!-- Date Navigation Header -->
+  <header class="diary-header">
+    <div></div>
+
+    <div class="date-display">
+      <input type="checkbox" id="calendar-toggle" class="calendar-checkbox">
+      <label for="calendar-toggle" class="date-button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="calendar-icon">
+          <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+          <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="date-text"><%= Date.today.strftime("%Y. %m. %d") %></span>
+      </label>
+    </div>
+
+    <div></div>
+  </header>
+
+  <!-- 기존 Chipi Character (Fixed) 위치 -->
+  <div class="chipi-floating">
+    <div id="image-preview" class="info-card hidden">
+      <img id="preview-img" src="" alt="미리보기"
+          style="width: clamp(160px, 40vw, 200px); height: clamp(160px, 40vw, 200px); object-fit: cover; border-radius: 16px; border: 2px solid #22C55E; margin-bottom: 8px;">
     </div>
   </div>
-</main>
+
+  <!-- Main Content -->
+  <div class="diary-main">
+    <div class="diary-scroll">
+      <main class="diary-content">
+        <!-- 제목 -->
+        <h1 class="diary-title">성장 기록 추가</h1>
+
+        <!-- 카메라 입력 (숨김) -->
+        <input 
+          type="file" 
+          id="camera-input" 
+          accept="image/*" 
+          capture="environment"
+          class="hidden">
+
+        <!-- 카메라 버튼 -->
+        <button 
+          id="camera-btn"
+          type="button"
+          class="action-btn primary-btn">
+          📷 사진 촬영
+        </button>
+
+        <!-- 분석 상태 표시 -->
+        <div id="analyzing" class="info-card hidden">
+          <p style="color: #22C55E; font-size: clamp(12px, 3vw, 14px); margin: 0;">🔄 식물 이미지 분석 중...</p>
+        </div>
+
+        <!-- 분석 결과 표시 -->
+        <div id="analysis-result" class="info-card hidden">
+          <p style="color: #22C55E; font-weight: 600; margin: 0 0 12px 0;">✅ 분석 완료</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: clamp(11px, 3vw, 13px);">
+            <div>
+              <p style="color: #666666; margin: 0 0 4px 0;">진단</p>
+              <p id="result-diagnosis" style="font-weight: 600; color: #1a1a1a; margin: 0;">-</p>
+            </div>
+            <div>
+              <p style="color: #666666; margin: 0 0 4px 0;">신뢰도</p>
+              <p id="result-confidence" style="font-weight: 600; color: #1a1a1a; margin: 0;">-</p>
+            </div>
+            <div>
+              <p style="color: #666666; margin: 0 0 4px 0;">엽면적 (cm²)</p>
+              <p id="result-pla" style="font-weight: 600; color: #1a1a1a; margin: 0;">-</p>
+            </div>
+            <div>
+              <p style="color: #666666; margin: 0 0 4px 0;">잎 개수</p>
+              <p id="result-leaf-count" style="font-weight: 600; color: #1a1a1a; margin: 0;">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 에러 메시지 -->
+        <div id="error-message" class="info-card hidden">
+          <p style="color: #ff6b6b; font-size: clamp(12px, 3vw, 14px); margin: 0;" id="error-text"></p>
+        </div>
+
+        <!-- 내용 입력 폼 -->
+        <%= form_with(url: "/users/#{current_user.id}/logs", method: :post, model: @log, local: true, id: "log-form") do |form| %>
+          <section class="diary-card">
+            <div style="width: 100%; display: flex; flex-direction: column; gap: clamp(12px, 3vw, 16px);">
+              <div>
+                <%= form.label :content, "성장 기록", style: "font-family: var(--font-primary); font-weight: 600; font-size: clamp(14px, 3.8vw, 16px); color: #1a1a1a; margin-bottom: 8px; display: block;" %>
+                <%= form.text_area :content, 
+                                  placeholder: "식물의 상태와 변화를 기록해보세요...",
+                                  rows: 4,
+                                  style: "width: 100%; padding: clamp(12px, 3vw, 16px); border: 1px solid #e0e0e0; border-radius: 12px; font-family: var(--font-primary); font-size: clamp(14px, 3.8vw, 16px); resize: none;" %>
+              </div>
+
+              <!-- 숨겨진 필드들 -->
+              <%= form.file_field :image, id: "hidden-image", class: "hidden" %>
+              <%= form.hidden_field :logged_on, value: params[:date] || Date.today, id: "logged-on" %>
+              <%= form.hidden_field :is_healthy, id: "is-healthy" %>
+              <%= form.hidden_field :pla, id: "pla" %>
+              <%= form.hidden_field :growth_stage, id: "growth-stage" %>
+
+              <!-- 버튼 -->
+              <div class="action-buttons">
+                <%= link_to "취소", 
+                            log_path(date: params[:date] || Date.today), 
+                            class: "action-btn secondary-btn" %>
+                <%= form.submit "확인", 
+                               class: "action-btn primary-btn",
+                               id: "submit-btn",
+                               disabled: true %>
+              </div>
+            </div>
+          </section>
+        <% end %>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="<%= log_path %>" class="nav-item active">
+      <%= image_tag "common/icons/nav-diary.svg", class: "nav-icon", alt: "성장일지" %>
+      <div class="nav-label">성장일지</div>
+    </a>
+    <a href="<%= root_path %>" class="nav-item">
+      <%= image_tag "common/icons/nav-home.svg", class: "nav-icon", alt: "홈" %>
+      <div class="nav-label">홈</div>
+    </a>
+    <a href="<%= mypage_path %>" class="nav-item">
+      <%= image_tag "common/icons/nav-mypage.svg", class: "nav-icon", alt: "마이페이지" %>
+      <div class="nav-label">마이페이지</div>
+    </a>
+  </nav>
+</div>
+
 
 <script>
-  const analyzeApiBaseUrl = "<%= ENV.fetch('ANALYZE_API_BASE_URL', 'https://chytonpide.azurewebsites.net/analyze') %>";
+  const analyzeApiBaseUrl = "<%= ENV.fetch('ANALYZE_API_BASE_URL', 'https://f4ebaaf31663.ngrok-free.app/analyze') %>";
 
   const cameraBtn = document.getElementById('camera-btn');
   const cameraInput = document.getElementById('camera-input');
@@ -113,6 +165,12 @@
   let selectedFile = null;
   let analysisData = null;
 
+  // 확실하게 초기 상태 숨김 (페이지 로드 직후)
+  imagePreview.classList.add('hidden');
+  analyzingDiv.classList.add('hidden');
+  analysisResult.classList.add('hidden');
+  errorMessage.classList.add('hidden');
+
   cameraBtn.addEventListener('click', () => {
     cameraInput.click();
   });
@@ -126,11 +184,13 @@
     const reader = new FileReader();
     reader.onload = (event) => {
       previewImg.src = event.target.result;
+      
+      // 상태: 미리보기 + 분석중만 표시
       imagePreview.classList.remove('hidden');
-      cameraBtn.classList.add('hidden');
-      errorMessage.classList.add('hidden');
       analyzingDiv.classList.remove('hidden');
+      cameraBtn.classList.add('hidden');
       analysisResult.classList.add('hidden');
+      errorMessage.classList.add('hidden');
       submitBtn.disabled = true;
     };
     reader.readAsDataURL(file);
@@ -141,6 +201,8 @@
   retakeBtn.addEventListener('click', () => {
     cameraInput.value = '';
     selectedFile = null;
+    
+    // 초기 상태로 복귀
     imagePreview.classList.add('hidden');
     cameraBtn.classList.remove('hidden');
     analyzingDiv.classList.add('hidden');
@@ -163,9 +225,9 @@
       console.log('응답 상태:', response.status);
   
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('에러 응답:', errorText);
-        throw new Error(`분석 실패: ${response.status} - ${errorText}`);
+        const errorBody = await response.text();
+        console.error('에러 응답:', errorBody);
+        throw new Error(`분석 실패: ${response.status} - ${errorBody}`);
       }
   
       const data = await response.json();
@@ -174,7 +236,6 @@
       if (data.status === 'success') {
         analysisData = data.data;
   
-        // leaf_count로 growth_stage 매핑
         let growthStage = 'Sprout';
         if (analysisData.leaf_count >= 7) {
           growthStage = 'Adult';
@@ -192,30 +253,31 @@
         document.getElementById('pla').value = analysisData.pla_cm2;
         document.getElementById('growth-stage').value = growthStage;
   
-        // ✅ 이미지 파일을 hidden input에 연결
         const hiddenImageInput = document.getElementById('hidden-image');
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         hiddenImageInput.files = dataTransfer.files;
   
+        // 상태: 미리보기 + 결과만 표시
         analyzingDiv.classList.add('hidden');
         analysisResult.classList.remove('hidden');
-        submitBtn.disabled = false;
         errorMessage.classList.add('hidden');
+        submitBtn.disabled = false;
       } else {
         showError('분석 중 오류가 발생했습니다.');
       }
     } catch (error) {
       console.error('분석 요청 오류:', error);
       showError(error.message);
-      analyzingDiv.classList.add('hidden');
     }
   }
 
-
-
   function showError(message) {
     errorText.textContent = message;
+    
+    // 상태: 미리보기 + 에러만 표시
+    analyzingDiv.classList.add('hidden');
+    analysisResult.classList.add('hidden');
     errorMessage.classList.remove('hidden');
     submitBtn.disabled = true;
   }
@@ -227,3 +289,4 @@
     }
   });
 </script>
+

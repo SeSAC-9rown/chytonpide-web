@@ -4,7 +4,6 @@
 .home-page {
   position: relative;
   height: 100vh;
-  max-width: 430px;
   margin: 0 auto;
   overflow: hidden;
   display: flex;
@@ -18,7 +17,6 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 430px;
   height: 100vh;
   object-fit: cover;
   z-index: 0;
@@ -31,9 +29,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
-  padding-bottom: 65px;
+  justify-content: space-between; /* 위/아래로 나누기 */
+  padding: 24px clamp(16px, 4vw, 20px);
   overflow-y: hidden;
   overflow-x: hidden;
   max-height: calc(100vh - 70px);
@@ -43,12 +40,11 @@
 .info-cards {
   display: flex;
   gap: clamp(12px, 3vw, 16px);
-  margin-bottom: clamp(8px, 2vw, 10px);
+  margin-bottom: clamp(12px, 2vw, 10px);
   flex-shrink: 0;
-  transform: translateY(30%);
 }
 
-.info-card {
+.home-page .info-card {
   flex: 1;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
@@ -108,7 +104,6 @@
   gap: clamp(12px, 3vw, 16px);
   margin-bottom: clamp(8px, 2vw, 10px);
   flex-shrink: 0;
-  transform: translateY(40%);
 }
 
 .care-card {
@@ -148,23 +143,28 @@
   color: #155dfc;
 }
 
+.light-control-wrapper {
+  margin-top: clamp(12px, 3vw, 16px);
+}
+
 /* ===== 치피 캐릭터 ===== */
-.chipi-container {
-  flex: 1;
+.chipi-fixed {
+  position: fixed;
+  left: 50%;
+  bottom: 29vh;        /* 화면 높이 기준 위치 */
+  transform: translateX(-50%);
+  width: 35vh;         /* 화면 높이 기준 크기 */
+  max-width: 320px;    /* 너무 커지는 것 제한 */
+  aspect-ratio: 1 / 1; /* 정사각형 박스 (필요에 따라 조절) */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  padding-bottom: 0;
-  min-height: 0;
-  transform: translateY(0%);
 }
 
-.chipi-character {
-  width: clamp(230px, 63vw, 322px);
-  height: auto;
+.chipi-fixed-img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
 }
 
 /* ===== 조명 컨트롤 카드 ===== */
@@ -176,7 +176,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 0;
   flex-shrink: 0;
-  transform: translateY(-20%);
 }
 
 .light-header {
@@ -228,6 +227,11 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
+.light-btn-auto {
+  color: #155cfb;
+  background: #ffffff;
+}
+
 .light-btn:active {
   transform: scale(0.98);
 }
@@ -238,10 +242,16 @@
   box-shadow: 0 4px 12px rgba(21, 93, 252, 0.3);
 }
 
-.light-btn-auto {
-  border: 1.5px solid #e5e7eb;
-  color: #155cfb;
-  background: #ffffff;
+.light-btn-off.active {
+  background: #155dfc;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(21, 93, 252, 0.3);
+}
+
+.light-btn-auto.active {
+  background: #155dfc;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(21, 93, 252, 0.3);
 }
 
 /* ===== BOTTOM NAVIGATION ===== */
@@ -251,7 +261,6 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 430px;
   height: clamp(60px, 15vw, 70px);
   background: rgba(14, 12, 12, 0.85);
   backdrop-filter: blur(12px);
@@ -349,4 +358,63 @@
 .home-night .light-btn-on.active {
   background: #155dfc;
   color: #ffffff;
+}
+
+/* ===== No Device Message ===== */
+.no-device-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(40px, 10vw, 60px) clamp(20px, 5vw, 24px);
+  min-height: 50vh;
+}
+
+.no-device-icon {
+  font-size: clamp(60px, 15vw, 80px);
+  margin-bottom: clamp(20px, 5vw, 24px);
+  opacity: 0.7;
+}
+
+.no-device-title {
+  font-family: var(--font-primary);
+  font-size: clamp(18px, 4.8vw, 22px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  margin: 0 0 clamp(12px, 3vw, 16px) 0;
+}
+
+.no-device-description {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: var(--font-weight-regular);
+  color: #666666;
+  line-height: 1.6;
+  margin: 0 0 clamp(24px, 6vw, 32px) 0;
+}
+
+.no-device-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 3.5vw, 18px) clamp(24px, 6vw, 32px);
+  background: #22C55E;
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  border-radius: clamp(12px, 3vw, 16px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  transition: all 0.2s ease;
+}
+
+.no-device-btn:hover {
+  background: #16A34A;
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.no-device-btn:active {
+  transform: scale(0.98);
 }

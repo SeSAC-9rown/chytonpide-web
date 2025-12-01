@@ -22,6 +22,7 @@ class DevicesController < ApplicationController
         
         update_params = {}
         update_params[:lcd_face] = params[:lcd_face] if params[:lcd_face].present?
+        update_params[:is_led_on] = params[:is_led_on] if params[:is_led_on].present?
         
         if update_params.empty?
           render json: { 
@@ -35,6 +36,7 @@ class DevicesController < ApplicationController
           render json: {
             status: 'success',
             lcd_face: device.lcd_face,
+            is_led_on: device.is_led_on,
             updated_at: Time.current.in_time_zone('Asia/Seoul').iso8601(6)
           }
         else

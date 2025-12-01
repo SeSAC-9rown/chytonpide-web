@@ -1,100 +1,135 @@
 <% content_for :styles do %>
-	<%= stylesheet_link_tag "reset" %>
-	<%= stylesheet_link_tag "variables" %>
-	<%= stylesheet_link_tag "typography" %>
-	<%= stylesheet_link_tag "home" %>
-	<%= stylesheet_link_tag "mobile" %>
+  <%= stylesheet_link_tag "reset" %>
+  <%= stylesheet_link_tag "variables" %>
+  <%= stylesheet_link_tag "typography" %>
+  <%= stylesheet_link_tag "home" %>
+  <%= stylesheet_link_tag "mobile" %>
 <% end %>
 
-<div class="home-page home-day">
-	<!-- Background Image -->
-	<%= image_tag "home/day-background.png", alt: "낮 배경", class: "home-background" %>
+<div class="home-page home-day" id="home-container">
+  <!-- Background Image -->
+  <%= image_tag "home/day-background.png", alt: "낮 배경", class: "home-background", id: "home-bg" %>
+  
+  <!-- 치피 캐릭터 (디바이스 있을 때만) -->
+  <% if current_user.device.present? %>
+    <div class="chipi-fixed">
+      <%= image_tag "chipi/chipi-day.png", alt: "치피", class: "chipi-fixed-img", id: "chipi-img" %>
+    </div>
+  <% end %>
+  
+  <!-- Main Content -->
+  <div class="home-content">
+    <% if current_user.device.present? %>
+      <div>
+        <!-- 온도/습도 카드 -->
+        <div class="info-cards">
+          <div class="info-card temp-card">
+            <div class="card-label">온도</div>
+            <div class="card-value">
+              <span class="value-number" id="sensor-temperature">24</span>
+              <span class="value-unit">°C</span>
+            </div>
+            <div class="card-status status-good">적당해요</div>
+          </div>
 
-	<!-- Main Content -->
-	<div class="home-content">
-		<% if current_user.device.present? %>
-			<!-- 온도/습도 카드 -->
-			<div class="info-cards">
-				<div class="info-card temp-card">
-					<div class="card-label">온도</div>
-					<div class="card-value">
-						<span class="value-number" id="sensor-temperature">24</span>
-						<span class="value-unit">°C</span>
-					</div>
-					<div class="card-status status-good">적당해요</div>
-				</div>
+          <div class="info-card humidity-card">
+            <div class="card-label">습도</div>
+            <div class="card-value">
+              <span class="value-number" id="sensor-humidity">55</span>
+              <span class="value-unit">%</span>
+            </div>
+            <div class="card-status status-warning">건조해요</div>
+          </div>
+        </div>
+        
+        <!-- 물주기/영양제 카드 -->
+        <div class="care-cards">
+          <div class="care-card water-card">
+            <div class="care-icon">💧</div>
+            <div class="care-info">
+              <div class="care-label">물 주기</div>
+              <div class="care-value">
+                <% watering_interval_days = current_user.device.kit.watering_interval_days %>
+                <% watering_d_days = (watering_interval_days - ((Date.current - current_user.device.kit.planted_at).to_i % watering_interval_days)) % watering_interval_days %>
+                <%= watering_d_days.zero? ? "D-day" : "D-" + watering_d_days.to_s %>
+              </div>
+            </div>
+          </div>
 
-				<div class="info-card humidity-card">
-					<div class="card-label">습도</div>
-					<div class="card-value">
-						<span class="value-number" id="sensor-humidity">55</span>
-						<span class="value-unit">%</span>
-					</div>
-					<div class="card-status status-warning">건조해요</div>
-				</div>
-			</div>
-
-			<!-- 물주기/영양제 카드 -->
-			<div class="care-cards">
-				<div class="care-card water-card">
-					<div class="care-icon">💧</div>
-					<div class="care-info">
-						<div class="care-label">물 주기</div>
-						<div class="care-value">
-							<% watering_interval_days = current_user.device.kit.watering_interval_days %>
-							<% watering_d_days = (watering_interval_days - ((Date.current - current_user.device.kit.planted_at).to_i % watering_interval_days)) % watering_interval_days %>
-							<%= watering_d_days.zero? ? "D-day" : "D-" + watering_d_days.to_s %>
-						</div>
-					</div>
-				</div>
-
-				<div class="care-card nutrient-card">
-					<div class="care-icon">🌿</div>
-					<div class="care-info">
-						<div class="care-label">영양제</div>
-						<div class="care-value">
-							<% fertilizer_interval_days = current_user.device.kit.fertilizer_interval_days %>
-							<% fertilizer_d_days = (fertilizer_interval_days - ((Date.current - current_user.device.kit.planted_at).to_i % fertilizer_interval_days)) % fertilizer_interval_days %>
-							<%= fertilizer_d_days.zero? ? "D-day" : "D-" + fertilizer_d_days.to_s %>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- 치피 캐릭터 -->
-			<div class="chipi-container">
-				<%= image_tag "chipi/chipi-day.png", alt: "치피", class: "chipi-character" %>
-			</div>
-
-			<!-- 조명 컨트롤 카드 -->
-			<div class="light-control-card">
-				<div class="light-header">
-					<div class="light-icon">☀️</div>
-					<span class="light-title">식물 성장 조명</span>
-					<span class="light-status" id="led-mode"><%= current_user.device.led_mode %></span>
-				</div>
-				<div class="light-buttons">
-					<button id="btn-on"
-							class="light-btn light-btn-on <%= 'active' if current_user.device.led_mode == 'ON' %>"
-							data-led-mode="ON">
-						ON
-					</button>
-					<button id="btn-off"
-							class="light-btn light-btn-off <%= 'active' if current_user.device.led_mode == 'OFF' %>"
-							data-led-mode="OFF">
-						OFF
-					</button>
-					<button id="btn-auto"
-							class="light-btn light-btn-auto <%= 'active' if current_user.device.led_mode == 'AUTO' %>"
-							data-led-mode="AUTO">
-						AUTO
-					</button>
-				</div>
-			</div>
+          <div class="care-card nutrient-card">
+            <div class="care-icon">🌿</div>
+            <div class="care-info">
+              <div class="care-label">영양제</div>
+              <div class="care-value">
+                <% fertilizer_interval_days = current_user.device.kit.fertilizer_interval_days %>
+                <% fertilizer_d_days = (fertilizer_interval_days - ((Date.current - current_user.device.kit.planted_at).to_i % fertilizer_interval_days)) % fertilizer_interval_days %>
+                <%= fertilizer_d_days.zero? ? "D-day" : "D-" + fertilizer_d_days.to_s %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="light-control-wrapper">
+        <!-- 조명 컨트롤 카드 -->
+        <div class="light-control-card">
+          <div class="light-header">
+            <div class="light-icon">☀️</div>
+            <span class="light-title">식물 성장 조명</span>
+            <span class="light-status" id="led-mode"><%= current_user.device.led_mode %></span>
+          </div>
+          <div class="light-buttons">
+            <button id="btn-on"
+                class="light-btn light-btn-on <%= 'active' if current_user.device.led_mode == 'ON' %>"
+                data-led-mode="ON">
+              ON
+            </button>
+            <button id="btn-off"
+                class="light-btn light-btn-off <%= 'active' if current_user.device.led_mode == 'OFF' %>"
+                data-led-mode="OFF">
+              OFF
+            </button>
+            <button id="btn-auto"
+                class="light-btn light-btn-auto <%= 'active' if current_user.device.led_mode == 'AUTO' %>"
+                data-led-mode="AUTO">
+              AUTO
+            </button>
+          </div>
+        </div>
+      </div>
+      
       <script>
         (function() {
           const userId  = <%= current_user.id %>;
           const csrfTok = document.querySelector('meta[name="csrf-token"]').content;
+
+          const homeContainer = document.getElementById('home-container');
+          const homeBg        = document.getElementById('home-bg');
+          const chipiImg      = document.getElementById('chipi-img');
+
+          function updateTheme(ledMode) {
+            if (ledMode === 'OFF') {
+              // Night 모드
+              homeContainer.classList.remove('home-day');
+              homeContainer.classList.add('home-night');
+              homeBg.src = '<%= asset_path("home/night-background.png") %>';
+              homeBg.alt = '밤 배경';
+              if (chipiImg) {
+                chipiImg.src = '<%= asset_path("chipi/chipi-night.png") %>';
+                chipiImg.alt = '치피 밤';
+              }
+            } else {
+              // Day 모드 (ON, AUTO)
+              homeContainer.classList.remove('home-night');
+              homeContainer.classList.add('home-day');
+              homeBg.src = '<%= asset_path("home/day-background.png") %>';
+              homeBg.alt = '낮 배경';
+              if (chipiImg) {
+                chipiImg.src = '<%= asset_path("chipi/chipi-day.png") %>';
+                chipiImg.alt = '치피 낮';
+              }
+            }
+          }
 
           async function updateDevice(ledMode, isLedOn, lcdFace) {
             const params = new URLSearchParams();
@@ -117,6 +152,7 @@
             if (res.ok && data.status === 'success') {
               document.getElementById('led-mode').textContent = ledMode;
               setLedButtonsUI(ledMode);
+              updateTheme(ledMode); // 테마 전환
             } else {
               alert('상태 업데이트에 실패했습니다.');
             }
@@ -143,7 +179,9 @@
           }
 
           document.addEventListener('turbo:load', () => {
-            setLedButtonsUI('<%= current_user.device.led_mode %>');
+            const currentMode = '<%= current_user.device.led_mode %>';
+            setLedButtonsUI(currentMode);
+            updateTheme(currentMode); // 페이지 로드 시 초기 테마 설정
 
             document.getElementById('btn-on').addEventListener('click', () => {
               updateDevice('ON', 'true', 'HAPPY');
@@ -154,33 +192,34 @@
             });
 
             document.getElementById('btn-auto').addEventListener('click', () => {
-              updateDevice('AUTO', 'true', 'HAPPY');
+              updateDevice('AUTO', 'true', 'NEUTRAL');
             });
           });
         })();
       </script>
-		<% else %>
-			<div class="no-device-message">
-				<h2>등록된 디바이스가 없습니다</h2>
-				<p>첫 번째 화분 친구를 등록해보세요!</p>
-				<%= link_to "디바이스 등록", new_user_device_path(current_user), class: "btn btn-primary" %>
-			</div>
-		<% end %>
-	</div>
+    <% else %>
+      <div class="no-device-message">
+        <div class="no-device-icon">📱</div>
+        <h2 class="no-device-title">등록된 디바이스가 없습니다</h2>
+        <p class="no-device-description">첫 번째 화분 친구를 등록해보세요!</p>
+        <%= link_to "디바이스 등록", new_user_device_path(current_user), class: "no-device-btn" %>
+      </div>
+    <% end %>
+  </div>
 
-	<!-- Bottom Navigation -->
-	<nav class="bottom-nav">
-		<%= link_to log_path, class: "nav-item" do %>
-			<%= image_tag "common/icons/nav-diary.svg", alt: "성장일지", class: "nav-icon" %>
-			<div class="nav-label">성장일지</div>
-		<% end %>
-		<%= link_to root_path, class: "nav-item active" do %>
-			<%= image_tag "common/icons/nav-home.svg", alt: "홈", class: "nav-icon" %>
-			<div class="nav-label">홈</div>
-		<% end %>
-		<%= link_to mypage_path, class: "nav-item" do %>
-			<%= image_tag "common/icons/nav-mypage.svg", alt: "마이페이지", class: "nav-icon" %>
-			<div class="nav-label">마이페이지</div>
-		<% end %>
-	</nav>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <%= link_to log_path, class: "nav-item" do %>
+      <%= image_tag "common/icons/nav-diary.svg", alt: "성장일지", class: "nav-icon" %>
+      <div class="nav-label">성장일지</div>
+    <% end %>
+    <%= link_to root_path, class: "nav-item active" do %>
+      <%= image_tag "common/icons/nav-home.svg", alt: "홈", class: "nav-icon" %>
+      <div class="nav-label">홈</div>
+    <% end %>
+    <%= link_to mypage_path, class: "nav-item" do %>
+      <%= image_tag "common/icons/nav-mypage.svg", alt: "마이페이지", class: "nav-icon" %>
+      <div class="nav-label">마이페이지</div>
+    <% end %>
+  </nav>
 </div>

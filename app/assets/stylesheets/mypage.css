@@ -1,0 +1,417 @@
+/* MyPage Styles */
+
+/* ===== 기본 레이아웃 ===== */
+.mypage {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  max-width: 430px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #f5f8dc 0%, #e8f5e9 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, #f5f8dc 0%, #e8f5e9 100%);
+}
+
+/* ===== HEADER ===== */
+.mypage-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-family: var(--font-primary);
+  font-size: clamp(20px, 5.5vw, 26px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+}
+
+.settings-btn {
+  width: clamp(24px, 6.5vw, 28px);
+  height: clamp(24px, 6.5vw, 28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.settings-btn:active {
+  transform: scale(0.9);
+}
+
+.settings-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ===== MAIN CONTENT ===== */
+.mypage-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 clamp(20px, 5vw, 24px);
+  padding-bottom: 70px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ===== PROFILE SECTION ===== */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-badge {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 6px);
+  margin-bottom: clamp(4px, 1vw, 6px);
+}
+
+.level-text {
+  font-family: var(--font-primary);
+  font-size: clamp(10px, 2.7vw, 12px);
+  font-weight: var(--font-weight-semibold);
+  color: #7cb342;
+}
+
+.level-name {
+  font-family: var(--font-primary);
+  font-size: clamp(10px, 2.7vw, 12px);
+  font-weight: var(--font-weight-semibold);
+  color: #1a1a1a;
+}
+
+.profile-image-container {
+  width: clamp(65px, 18vw, 75px);
+  height: clamp(65px, 18vw, 75px);
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: clamp(5px, 1.3vw, 7px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.profile-image {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.5vw, 3px);
+  margin-bottom: clamp(7px, 1.8vw, 9px);
+}
+
+.nickname-container {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.nickname {
+  font-family: var(--font-primary);
+  font-size: clamp(15px, 4vw, 18px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+}
+
+.edit-btn {
+  width: clamp(16px, 4.3vw, 20px);
+  height: clamp(16px, 4.3vw, 20px);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.edit-btn:active {
+  transform: scale(0.9);
+}
+
+.edit-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.email {
+  font-family: var(--font-primary);
+  font-size: clamp(10px, 2.7vw, 12px);
+  font-weight: var(--font-weight-regular);
+  color: #666666;
+}
+
+/* ===== STATS CONTAINER ===== */
+.stats-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 292px;
+  height: 67px;
+  border-radius: 20px;
+  border: 1.8px solid #FFF;
+  background: url(<path-to-image>) lightgray 50% / cover no-repeat, linear-gradient(180deg, rgba(196, 196, 196, 0.00) 0%, rgba(255, 255, 255, 0.46) 62.28%);
+  backdrop-filter: blur(10px);
+  gap: 48px;
+  padding: 0 35.54px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.5vw, 3px);
+}
+
+.stat-label {
+  font-family: var(--font-primary);
+  font-size: clamp(9px, 2.4vw, 11px);
+  font-weight: var(--font-weight-medium);
+  color: #666666;
+}
+
+.stat-value {
+  font-family: var(--font-primary);
+  font-size: clamp(20px, 5.5vw, 26px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.stat-divider {
+  width: 1px;
+  height: clamp(24px, 6vw, 30px);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* ===== RECIPE SECTION ===== */
+.recipe-section {
+  flex-shrink: 0;
+  margin-top: 20px;
+}
+
+.section-title {
+  font-family: var(--font-primary);
+  font-size: clamp(15px, 4vw, 18px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  margin-bottom: clamp(8px, 2vw, 10px);
+}
+
+.recipe-carousel {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: clamp(8px, 2vw, 10px);
+}
+
+.recipe-track {
+  display: flex;
+  gap: clamp(10px, 2.5vw, 12px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: clamp(4px, 1vw, 6px);
+}
+
+.recipe-track::-webkit-scrollbar {
+  display: none;
+}
+
+.recipe-card {
+  flex: 0 0 clamp(90px, 24vw, 105px);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.5vw, 8px);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.recipe-card:active {
+  transform: scale(0.95);
+}
+
+.recipe-image {
+  width: clamp(90px, 24vw, 105px);
+  height: clamp(90px, 24vw, 105px);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-name {
+  font-family: var(--font-primary);
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: var(--font-weight-medium);
+  color: #1a1a1a;
+  text-align: center;
+}
+
+/* ===== CAROUSEL INDICATORS ===== */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 1.5vw, 8px);
+}
+
+.indicator {
+  width: clamp(6px, 1.5vw, 8px);
+  height: clamp(6px, 1.5vw, 8px);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  background: #7cb342;
+  width: clamp(20px, 5vw, 24px);
+  border-radius: clamp(4px, 1vw, 5px);
+}
+
+/* ===== AD SECTION ===== */
+.ad-section {
+  flex-shrink: 0;
+  margin-top: 50px;
+  margin-bottom: 0;
+}
+
+.ad-banner {
+  width: 100%;
+  border-radius: clamp(14px, 3.5vw, 16px);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ad-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ===== ACTION SECTIONS (Logout / Delete) ===== */
+.action-section {
+  flex-shrink: 0;
+  margin-top: clamp(16px, 4vw, 20px);
+}
+
+.action-form {
+  width: 100%;
+}
+
+.action-btn {
+  width: 100%;
+  padding: clamp(14px, 3.5vw, 18px);
+  border: none;
+  border-radius: clamp(12px, 3vw, 16px);
+  font-family: var(--font-primary);
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #666666;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.logout-btn:active {
+  transform: scale(0.98);
+}
+
+.delete-btn {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  border: 1.5px solid #ff6b6b;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 107, 107, 0.2);
+}
+
+.delete-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== BOTTOM NAVIGATION ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: clamp(60px, 15vw, 70px);
+  background: rgba(14, 12, 12, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: clamp(6px, 1.5vw, 8px) 0;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 0.8vw, 5px);
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: clamp(4px, 1vw, 6px) clamp(12px, 3vw, 16px);
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-item.active {
+  color: #ffffff;
+}
+
+.nav-icon {
+  width: clamp(22px, 6vw, 26px);
+  height: clamp(22px, 6vw, 26px);
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.6;
+}
+
+.nav-item.active .nav-icon {
+  opacity: 1;
+}
+
+.nav-label {
+  font-family: var(--font-primary);
+  font-size: clamp(10px, 2.8vw, 12px);
+  font-weight: var(--font-weight-medium);
+}

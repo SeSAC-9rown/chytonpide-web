@@ -1,0 +1,617 @@
+/* hidden 클래스 우선순위 확실하게 */
+.hidden {
+  display: none !important;
+}
+
+/* ===== Plant Image Container ===== */
+.plant-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(16px, 4vw, 24px);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: clamp(12px, 3vw, 16px);
+}
+
+.plant-image {
+  width: 100%;
+  max-width: clamp(200px, 50vw, 280px);
+  height: auto;
+  object-fit: contain;
+  border-radius: clamp(12px, 3vw, 16px);
+}
+
+/* ===== Status Cards ===== */
+.status-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(12px, 3vw, 16px);
+  width: 100%;
+}
+
+.status-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #E5E7EB;
+  border-radius: clamp(12px, 3vw, 16px);
+  padding: clamp(14px, 3.5vw, 18px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+}
+
+.card-icon {
+  width: clamp(18px, 4.5vw, 22px);
+  height: clamp(18px, 4.5vw, 22px);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-family: var(--font-primary);
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: var(--font-weight-semibold);
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Stage Card Specific */
+.stage-display {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 10px);
+  align-items: center;
+}
+
+.stage-number {
+  font-family: var(--font-primary);
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: var(--font-weight-bold);
+  color: #22C55E;
+  line-height: 1;
+}
+
+.stage-progress {
+  display: flex;
+  gap: clamp(4px, 1vw, 6px);
+  width: 100%;
+  justify-content: center;
+}
+
+.progress-dash {
+  flex: 1;
+  height: clamp(6px, 1.5vw, 8px);
+  background: #E5E7EB;
+  border-radius: clamp(3px, 0.8vw, 4px);
+  transition: background 0.3s ease;
+}
+
+.progress-dash.active {
+  background: #22C55E;
+}
+
+/* Speed Card Specific */
+.speed-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(60px, 15vw, 80px);
+}
+
+.speed-result {
+  font-family: var(--font-primary);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: var(--font-weight-medium);
+  color: #1a1a1a;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+}
+
+/* ===== Health Alert ===== */
+.health-alert {
+  width: 100%;
+  padding: clamp(16px, 4vw, 20px);
+  border-radius: clamp(12px, 3vw, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.5vw, 12px);
+  border: 1.5px solid;
+  transition: all 0.3s ease;
+}
+
+.health-alert.warning {
+  background: rgba(255, 243, 205, 0.3);
+  border-color: #FFA726;
+}
+
+.health-alert.healthy {
+  background: rgba(199, 251, 218, 0.3);
+  border-color: #22C55E;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 12px);
+}
+
+.alert-icon {
+  width: clamp(22px, 5.5vw, 28px);
+  height: clamp(22px, 5.5vw, 28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.health-alert.warning .alert-icon {
+  color: #FFA726;
+}
+
+.health-alert.healthy .alert-icon {
+  color: #22C55E;
+}
+
+.alert-title {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.alert-content {
+  padding-left: clamp(32px, 8vw, 40px);
+}
+
+.alert-description {
+  font-family: var(--font-primary);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: var(--font-weight-regular);
+  color: #666666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+/* ===== 기본 레이아웃 ===== */
+.diary {
+  position: relative;
+  height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== LOG LIST BACKGROUND (다른 페이지에서 사용) ===== */
+.log-background {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* ===== DATE NAVIGATION HEADER ===== */
+.diary-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 24px);
+  background: transparent;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.nav-arrow {
+  width: clamp(36px, 9vw, 44px);
+  height: clamp(36px, 9vw, 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+
+.nav-arrow-disabled {
+  cursor: default;
+  opacity: 0.35;
+  background: transparent;
+  pointer-events: none;
+}
+
+.nav-arrow:active {
+  transform: scale(0.9);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.date-display {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+}
+
+.calendar-checkbox {
+  display: none;
+}
+
+.date-button {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: clamp(20px, 5vw, 24px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.date-button:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.calendar-icon {
+  color: #1a1a1a;
+}
+
+.date-text {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 3.7vw, 16px);
+  font-weight: var(--font-weight-semibold);
+  color: #1a1a1a;
+}
+
+/* ===== CALENDAR POPUP ===== */
+.calendar-popup {
+  position: absolute;
+  top: calc(100% + clamp(8px, 2vw, 10px));
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  width: clamp(280px, 75vw, 320px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: clamp(16px, 4vw, 20px);
+  padding: clamp(16px, 4vw, 20px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.calendar-checkbox:checked ~ .calendar-popup {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(-50%) scale(1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.calendar-nav-btn {
+  width: clamp(28px, 7vw, 32px);
+  height: clamp(28px, 7vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #1a1a1a;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:active {
+  background: rgba(0, 0, 0, 0.05);
+  transform: scale(0.9);
+}
+
+.calendar-title {
+  font-family: var(--font-primary);
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  margin: 0px 0px 8px 4px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 6px);
+  margin-bottom: clamp(6px, 1.5vw, 8px);
+}
+
+.weekday {
+  font-family: var(--font-primary);
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: var(--font-weight-medium);
+  color: #666666;
+  text-align: center;
+  padding: clamp(4px, 1vw, 6px) 0;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(4px, 1vw, 6px);
+}
+
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: var(--font-weight-medium);
+  color: #1a1a1a;
+  border-radius: clamp(6px, 1.5vw, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.day:not(:empty):hover {
+  background: rgba(124, 179, 66, 0.1);
+}
+
+.day:not(:empty):active {
+  background: rgba(124, 179, 66, 0.2);
+  transform: scale(0.95);
+}
+
+.calendar-footer {
+  text-align: center;
+  padding-top: clamp(8px, 2vw, 10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.calendar-hint {
+  font-family: var(--font-primary);
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: var(--font-weight-regular);
+  color: #666666;
+}
+
+.diary-main {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: clamp(360px, 90vw, 800px); /* 최소 360, 보통 90vw, 최대 520 */
+  height: 75vh;
+  z-index: 1;
+  background-color: #ffffff;
+  border-radius: clamp(24px, 6vw, 32px) clamp(24px, 6vw, 32px) 0 0;
+}
+
+/* 스크롤 가능한 영역 */
+.diary-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.diary-content {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 2vw, 12px);
+  /* padding: 위 오른쪽 아래 왼쪽 */
+  padding: clamp(56px, 14vw, 72px) clamp(16px, 4vw, 24px) clamp(16px, 4vw, 24px);
+  padding-bottom: 100px;
+}
+
+.chipi-floating {
+  position: fixed;
+  left: 50%;
+  bottom: 80vh;                 /* 기준선 */
+  transform: translate(-50%, 50%); /* X는 가운데, Y는 자기 높이의 50% 위로 */
+  z-index: 2;
+}
+
+.chipi-character {
+  width: clamp(180px, 45vw, 220px);
+  height: auto;
+  object-fit: contain;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ===== DIARY TITLE ===== */
+.diary-title {
+  font-family: var(--font-primary);
+  font-size: clamp(18px, 4.8vw, 22px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  text-align: center;
+  margin-top: clamp(0px, 0vw, 4px);
+  margin-bottom: clamp(16px, 4vw, 20px);
+  padding: 0 clamp(20px, 5vw, 24px);
+}
+
+/* ===== INFO CARD ===== */
+.diary .info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  background: rgba(199, 251, 218, 0.12);
+  border: 0.8px solid #E5E7EB;
+  border-radius: 16px;
+  padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 24px);
+  text-align: center;
+  margin-bottom: clamp(16px, 4vw, 20px);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  opacity: 0.94;
+  flex-shrink: 0;
+}
+
+.info-title {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: var(--font-weight-bold);
+  color: #1a1a1a;
+  margin: 0 0 clamp(8px, 2vw, 12px);
+}
+
+.info-description {
+  font-family: var(--font-primary);
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: var(--font-weight-regular);
+  color: #666666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 3vw, 16px);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2.5vw, 12px);
+  padding: clamp(18px, 4.5vw, 22px);
+  border: none;
+  border-radius: clamp(16px, 4vw, 20px);
+  font-family: var(--font-primary);
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-height: clamp(50px, 12vw, 60px);
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+.primary-btn {
+  background: #22C55E;
+  color: #ffffff;
+}
+
+.primary-btn:hover {
+  background: #16A34A;
+}
+
+.primary-btn .btn-icon {
+  color: #ffffff;
+}
+
+.secondary-btn {
+  background: #ffffff;
+  border: 1.5px solid #e0e0e0;
+  color: #1a1a1a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.secondary-btn:hover {
+  background: #f8f8f8;
+  border-color: #d0d0d0;
+}
+
+.secondary-btn .btn-icon {
+  color: #1a1a1a;
+}
+
+/* ===== BOTTOM NAVIGATION ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: clamp(60px, 15vw, 70px);
+  background: rgba(14, 12, 12, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: clamp(6px, 1.5vw, 8px) 0;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3px, 0.8vw, 5px);
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: clamp(4px, 1vw, 6px) clamp(12px, 3vw, 16px);
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-item.active {
+  color: #ffffff;
+}
+
+.nav-icon {
+  width: clamp(22px, 6vw, 26px);
+  height: clamp(22px, 6vw, 26px);
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.6;
+}
+
+.nav-item.active .nav-icon {
+  opacity: 1;
+}
+
+.nav-label {
+  font-family: var(--font-primary);
+  font-size: clamp(10px, 2.8vw, 12px);
+  font-weight: var(--font-weight-medium);
+}
