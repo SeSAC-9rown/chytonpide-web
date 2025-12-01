@@ -1,139 +1,279 @@
-<main class="flex-1 p-6 pb-24 md:pb-6 md:ml-64">
+<body>
   <div class="max-w-md mx-auto mt-12">
     <div class="bg-white p-8 rounded-lg shadow-md">
       <h2 class="text-2xl font-bold text-gray-800 mb-2 text-center">디바이스 등록</h2>
-      <p class="text-sm text-gray-600 text-center mb-6">화분 QR 코드를 스캔하세요</p>
-      
-      <!-- QR 코드 스캔 영역 표시 -->
-      <div class="mb-6 p-4 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center h-48">
-        <div class="text-center">
-          <svg class="w-16 h-16 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <p class="text-gray-600 text-sm">카메라 스캔 준비 중...</p>
-        </div>
-      </div>
-      
-      <!-- 카메라 열기 버튼 -->
-      <button 
-        id="scan-qr-btn"
-        class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition mb-3">
-        📷 QR 코드 스캔
+      <p class="text-sm text-gray-600 text-center mb-6">QR 스캔 또는 직접 입력</p>
+
+      <input 
+        type="file" 
+        id="camera-input" 
+        accept="image/*" 
+        capture="environment"
+        class="hidden">
+
+      <button
+        id="camera-btn"
+        class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition mb-4">
+        📷 카메라로 QR 촬영
       </button>
+
+      <input
+        type="text"
+        id="serial-input"
+        placeholder="시리얼 번호 입력"
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-600 mb-3">
+
+      <button
+        id="submit-btn"
+        class="w-full py-2 px-4 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
+        등록
+      </button>
+
+      <div id="message" class="mt-4 text-sm text-center text-gray-700 font-semibold"></div>
       
-      <!-- 수동 입력 영역 (선택사항) -->
-      <div class="border-t pt-4 mt-4">
-        <p class="text-sm text-gray-600 mb-3">또는 직접 입력</p>
-        <input 
-          type="text" 
-          id="serial-input" 
-          placeholder="시리얼 번호 입력 (예: CHY3343)"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-600 mb-3">
-        <button 
-          id="manual-submit-btn"
-          class="w-full py-2 px-4 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
-          등록
-        </button>
+      <!-- 디버깅 정보 -->
+      <div id="debug-info" class="mt-6 p-4 bg-gray-100 rounded text-xs font-mono hidden max-h-48 overflow-y-auto">
+        <div class="font-bold mb-2 text-gray-800">🔍 디버그:</div>
+        <div id="debug-log" class="text-gray-700 whitespace-pre-wrap"></div>
       </div>
-      
-      <!-- 로딩 상태 -->
-      <div id="loading" class="hidden mt-4 text-center">
-        <p class="text-gray-600">등록 중...</p>
+
+      <!-- 이미지 미리보기 -->
+      <div id="preview-container" class="mt-4 text-center hidden">
+        <img id="preview-img" src="" class="max-w-full border rounded" style="max-height: 200px;">
       </div>
-      
-      <!-- 결과 메시지 -->
-      <div id="message" class="mt-4 p-3 rounded-lg hidden text-sm text-center font-semibold"></div>
     </div>
   </div>
-</main>
+</body>
 
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <script>
-  // QR 코드 스캔 버튼 클릭
-  document.getElementById('scan-qr-btn').addEventListener('click', async () => {
-    try {
-      // iOS 13+, Android 모던 브라우저용 QR 코드 스캔
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
-      });
-      
-      // 간단한 카메라 활성화 (실제 QR 코드 디코딩은 라이브러리 필요)
-      // 여기서는 사용자가 시리얼을 입력하면 바로 전송하도록 설정
-      alert('카메라가 열렸습니다. 시리얼 번호를 입력하거나 QR을 스캔하세요.');
-      
-      // 스트림 종료
-      stream.getTracks().forEach(track => track.stop());
-    } catch (error) {
-      console.error('카메라 접근 실패:', error);
-      alert('카메라에 접근할 수 없습니다. 직접 입력해주세요.');
-    }
-  });
+  (function() {
+    const cameraBtn      = document.getElementById('camera-btn');
+    const cameraInput    = document.getElementById('camera-input');
+    const serialInput    = document.getElementById('serial-input');
+    const submitBtn      = document.getElementById('submit-btn');
+    const messageDiv     = document.getElementById('message');
+    const debugDiv       = document.getElementById('debug-info');
+    const debugLog       = document.getElementById('debug-log');
+    const previewImg     = document.getElementById('preview-img');
+    const previewContainer = document.getElementById('preview-container');
 
-  // 수동 등록 버튼
-  document.getElementById('manual-submit-btn').addEventListener('click', registerDevice);
-  
-  // Enter 키로도 등록 가능
-  document.getElementById('serial-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') registerDevice();
-  });
+    let isProcessing = false;
 
-  // 디바이스 등록 함수
-  async function registerDevice() {
-    const serial = document.getElementById('serial-input').value.trim();
-    
-    if (!serial) {
-      showMessage('시리얼 번호를 입력하세요', 'error');
-      return;
+    function log(msg) {
+      console.log(msg);
+      debugLog.textContent += msg + '\n';
+      debugDiv.classList.remove('hidden');
+      debugDiv.scrollTop = debugDiv.scrollHeight;
     }
-    
-    const loading = document.getElementById('loading');
-    const messageDiv = document.getElementById('message');
-    
-    loading.classList.remove('hidden');
-    messageDiv.classList.add('hidden');
-    
-    try {
-      const response = await fetch(`<%= user_device_path(current_user) %>`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-          device: { serial: serial }
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        showMessage('✅ ' + data.message, 'success');
-        document.getElementById('serial-input').value = '';
-        
-        // 2초 후 메인 페이지로 리다이렉트
-        setTimeout(() => {
-          window.location.href = '<%= root_path %>';
-        }, 2000);
-      } else {
-        showMessage('❌ ' + data.message, 'error');
+
+    function clearDebug() {
+      debugLog.textContent = '';
+      previewContainer.classList.add('hidden');
+    }
+
+    function showMessage(msg) {
+      messageDiv.textContent = msg;
+    }
+
+    // 🔧 jsQR 공식 방식 (단순하고 명확)
+    function decodeQRFromImage(img) {
+      try {
+        // 1. Canvas 생성 및 이미지 그리기
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          log('❌ Canvas 2D context 획득 실패');
+          return null;
+        }
+
+        ctx.drawImage(img, 0, 0);
+        log(`✓ Canvas: ${canvas.width}x${canvas.height}px`);
+
+        // 2. ImageData 추출 (공식 문서 방식)
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        log(`✓ ImageData: ${imageData.data.length} bytes`);
+
+        // 3. jsQR 실행 (원본 imageData 사용)
+        log('⏳ jsQR 처리 중...');
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+        if (code) {
+          log(`✅ QR 감지: ${code.data}`);
+          return code.data;
+        } else {
+          log('❌ QR 코드 미감지');
+          return null;
+        }
+      } catch (err) {
+        log(`❌ 오류: ${err.message}`);
+        console.error(err);
+        return null;
       }
-    } catch (error) {
-      console.error('등록 오류:', error);
-      showMessage('❌ 등록 중 오류가 발생했습니다', 'error');
-    } finally {
-      loading.classList.add('hidden');
     }
-  }
 
-  // 메시지 표시 함수
-  function showMessage(text, type) {
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = text;
-    messageDiv.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
-    
-    if (type === 'success') {
-      messageDiv.classList.add('bg-green-100', 'text-green-800');
-    } else {
-      messageDiv.classList.add('bg-red-100', 'text-red-800');
+    // 🔧 이미지 크기 최적화
+    function resizeImage(img) {
+      const MAX_DIMENSION = 1000;
+      
+      if (img.width <= MAX_DIMENSION && img.height <= MAX_DIMENSION) {
+        log(`✓ 이미지 크기 OK (${img.width}x${img.height})`);
+        return img;
+      }
+
+      log(`📏 이미지 리사이즈: ${img.width}x${img.height} → `, false);
+
+      const ratio = img.width / img.height;
+      let newWidth, newHeight;
+
+      if (img.width > img.height) {
+        newWidth = MAX_DIMENSION;
+        newHeight = Math.round(MAX_DIMENSION / ratio);
+      } else {
+        newHeight = MAX_DIMENSION;
+        newWidth = Math.round(MAX_DIMENSION * ratio);
+      }
+
+      log(`${newWidth}x${newHeight}`);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+      // Canvas를 Image로 변환
+      const resizedImg = new Image();
+      resizedImg.src = canvas.toDataURL();
+      
+      return new Promise((resolve) => {
+        resizedImg.onload = () => {
+          resolve(resizedImg);
+        };
+      });
     }
-  }
+
+    cameraBtn.addEventListener('click', () => {
+      if (isProcessing) return;
+      clearDebug();
+      cameraInput.click();
+    });
+
+    cameraInput.addEventListener('change', async (e) => {
+      if (isProcessing) return;
+      isProcessing = true;
+
+      const file = e.target.files[0];
+      if (!file) {
+        showMessage('파일을 선택해주세요.');
+        isProcessing = false;
+        return;
+      }
+
+      clearDebug();
+      showMessage('QR 코드 인식 중...');
+      log(`📁 파일: ${file.name}`);
+      log(`💾 크기: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
+      const reader = new FileReader();
+      
+      reader.onerror = () => {
+        log('❌ 파일 읽기 실패');
+        showMessage('❌ 파일을 읽을 수 없습니다.');
+        isProcessing = false;
+      };
+
+      reader.onload = (event) => {
+        const img = new Image();
+        
+        img.onerror = () => {
+          log('❌ 이미지 로드 실패');
+          showMessage('❌ 이미지를 로드할 수 없습니다.');
+          isProcessing = false;
+        };
+
+        img.onload = async () => {
+          try {
+            log(`🖼️ 원본 이미지: ${img.width}x${img.height}px`);
+
+            // 미리보기
+            previewImg.src = img.src;
+            previewContainer.classList.remove('hidden');
+
+            // 이미지 리사이즈
+            const processedImg = await resizeImage(img);
+
+            log('---');
+
+            // QR 디코드
+            const qrData = decodeQRFromImage(processedImg);
+
+            if (qrData) {
+              serialInput.value = qrData;
+              showMessage('✅ QR 인식 성공!');
+              log('---');
+              log('✨ 등록 버튼을 클릭하세요.');
+            } else {
+              showMessage('❌ QR 코드를 찾을 수 없습니다.');
+              log('---');
+              log('💡 다시 시도해주세요:');
+              log('   • QR 코드가 명확한가?');
+              log('   • QR 코드가 정면인가?');
+              log('   • 조명이 충분한가?');
+            }
+
+            cameraInput.value = '';
+            isProcessing = false;
+          } catch (err) {
+            log(`❌ 예상치 못한 오류: ${err.message}`);
+            console.error(err);
+            showMessage('❌ 오류가 발생했습니다.');
+            isProcessing = false;
+          }
+        };
+
+        img.src = event.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    submitBtn.addEventListener('click', async () => {
+      const serial = serialInput.value.trim();
+      if (!serial) {
+        showMessage('시리얼 번호를 입력하세요.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/users/<%= current_user.id %>/device', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+          },
+          body: JSON.stringify({ device: { serial: serial } })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showMessage('✅ ' + data.message);
+          serialInput.value = '';
+          setTimeout(() => {
+            window.location.href = '<%= root_path %>';
+          }, 1500);
+        } else {
+          showMessage('❌ ' + (data.message || '등록 실패'));
+        }
+      } catch (e) {
+        console.error(e);
+        showMessage('❌ 등록 중 오류가 발생했습니다.');
+      }
+    });
+  })();
 </script>
