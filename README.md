@@ -22,7 +22,7 @@
 
 ### 5. 시스템 아키텍처
 
-
+![arc](https://github.com/SeSAC-9rown/chytonpide-web)
 
 ### 7. API 엔드포인트
 #### Pages
@@ -103,28 +103,26 @@
 
 ### 8. 모델
 
-
-	- **User**
-		- email | provider | uid | name | avatar_url | social_avatar_url
-		- *string* | *string* | *string* | *string* | *string* | *string*
+- **User**
+  - email | provider | uid | name | avatar_url | social_avatar_url
+  - *string* | *string* | *string* | *string* | *string* | *string*
 	
 
-	- **Device**
-		- user | serial | model | led_mode | is_led_on | lcd_face
-		- *references* | *string* | *string* | *string* | *boolean* | *string*
+- **Device**
+	- user | serial | model | led_mode | is_led_on | lcd_face
+	- *references* | *string* | *string* | *string* | *boolean* | *string*
 	
+- **Kit**
+	- device | kind | name | planted_at | watering_interval_days | fertilizer_interval_days
+	- *references* | *string* | *string* | *date* | *integer* | *integer*
 
-	- **Kit**
-		- device | kind | name | planted_at | watering_interval_days | fertilizer_interval_days
-		- *references* | *string* | *string* | *date* | *integer* | *integer*
+- **Log**
+	- user | logged_on | content | growth_stage | is_healthy | pla
+	- *references* | *date* | *text* | *string* | *boolean* | *decimal*
 
-	- **Log**
-		- user | logged_on | content | growth_stage | is_healthy | pla
-		- *references* | *date* | *text* | *string* | *boolean* | *decimal*
-
-	- **SensorDatum**
-		- serial | temperature | humidity | illuminance
-		- *string* | *float* | *float* | *float*
+- **SensorDatum**
+	- serial | temperature | humidity | illuminance
+	- *string* | *float* | *float* | *float*
 
 ### 9. 개발 환경 실행
 
