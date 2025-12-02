@@ -22,7 +22,7 @@
 
 ### 5. 시스템 아키텍처
 
-![arc](https://github.com/SeSAC-9rown/chytonpide-web)
+![arc](https://github.com/SeSAC-9rown/chytonpide-web/blob/main/undefined.jpg)
 
 ### 7. API 엔드포인트
 #### Pages
